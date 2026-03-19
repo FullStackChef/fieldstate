@@ -14,3 +14,28 @@ import * as zod from "zod";
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
+
+/**
+ * Captures a lead from any entry point (contact, summon, labs, not-for-clients)
+ * @summary Submit a lead
+ */
+export const SubmitLeadBody = zod.object({
+  source: zod
+    .string()
+    .describe("Entry point (contact, summon, labs, not-for-clients)"),
+  name: zod.string().optional().describe("Submitter name (optional)"),
+  email: zod.string().email().describe("Submitter email (required)"),
+  message: zod.string().optional().describe("Message or context"),
+  inquiryType: zod.string().optional().describe("Type of inquiry"),
+  route: zod.string().optional().describe("Current route when submitted"),
+  honeypot: zod
+    .string()
+    .optional()
+    .describe("Honeypot anti-spam field (must be empty)"),
+});
+
+export const SubmitLeadResponse = zod.object({
+  success: zod.boolean(),
+  id: zod.string().optional(),
+  message: zod.string(),
+});

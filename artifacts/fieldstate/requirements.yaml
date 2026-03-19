@@ -1,0 +1,21 @@
+packages:
+  "framer-motion": "For page transitions, reveal-on-scroll animations, and the Summon panel"
+  "zustand": "For global state management (Summon state, ceremonial mode, cursor)"
+  "clsx": "Utility for constructing className strings conditionally"
+  "tailwind-merge": "Utility for merging tailwind classes without style conflicts"
+
+images:
+  - path: "artifacts/fieldstate/public/images/hero-abstract.png"
+    description: "Dark moody abstract texture, subtle atmospheric light leak on deep black background, grain, minimal, editorial style"
+    aspect_ratio: "16:9"
+  - path: "artifacts/fieldstate/public/images/mythos-bg.png"
+    description: "Monochrome architectural fragment in deep shadow, high contrast, brutalist and elegant, dark mode"
+    aspect_ratio: "16:9"
+  - path: "artifacts/fieldstate/public/images/forge-bg.png"
+    description: "Abstract metallic texture, dark gold and dark grey, glowing embers faintly in the background, out of focus"
+    aspect_ratio: "3:4"
+
+notes:
+  - "Forms use native fetch to POST /api/leads per instructions"
+  - "Zustand manages the global UI states (summon, nav, ceremonial, cursor)"
+  - "Wouter is used for routing"

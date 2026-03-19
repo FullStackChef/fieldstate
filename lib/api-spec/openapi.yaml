@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: leads
+    description: Lead capture operations
 paths:
   /healthz:
     get:
@@ -24,6 +26,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /leads:
+    post:
+      operationId: submitLead
+      tags: [leads]
+      summary: Submit a lead
+      description: Captures a lead from any entry point (contact, summon, labs, not-for-clients)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeadSubmission"
+      responses:
+        "200":
+          description: Lead submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeadSubmissionResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +66,53 @@ components:
           type: string
       required:
         - status
-
+    LeadSubmission:
+      type: object
+      properties:
+        source:
+          type: string
+          description: Entry point (contact, summon, labs, not-for-clients)
+        name:
+          type: string
+          description: Submitter name (optional)
+        email:
+          type: string
+          format: email
+          description: Submitter email (required)
+        message:
+          type: string
+          description: Message or context
+        inquiryType:
+          type: string
+          description: Type of inquiry
+        route:
+          type: string
+          description: Current route when submitted
+        honeypot:
+          type: string
+          description: Honeypot anti-spam field (must be empty)
+      required:
+        - source
+        - email
+    LeadSubmissionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        id:
+          type: string
+        message:
+          type: string
+      required:
+        - success
+        - message
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        error:
+          type: string
+      required:
+        - success
+        - error

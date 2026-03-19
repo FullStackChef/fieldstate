@@ -8,3 +8,31 @@
 export interface HealthStatus {
   status: string;
 }
+
+export interface LeadSubmission {
+  /** Entry point (contact, summon, labs, not-for-clients) */
+  source: string;
+  /** Submitter name (optional) */
+  name?: string;
+  /** Submitter email (required) */
+  email: string;
+  /** Message or context */
+  message?: string;
+  /** Type of inquiry */
+  inquiryType?: string;
+  /** Current route when submitted */
+  route?: string;
+  /** Honeypot anti-spam field (must be empty) */
+  honeypot?: string;
+}
+
+export interface LeadSubmissionResponse {
+  success: boolean;
+  id?: string;
+  message: string;
+}
+
+export interface ErrorResponse {
+  success: boolean;
+  error: string;
+}

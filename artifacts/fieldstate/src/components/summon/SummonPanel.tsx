@@ -15,6 +15,7 @@ export function SummonPanel() {
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [intent, setIntent] = useState("");
   const [honeypot, setHoneypot] = useState("");
@@ -37,7 +38,7 @@ export function SummonPanel() {
       
       setMessages([{ sender: 'system', text: greeting }]);
       setTimeout(() => {
-        setMessages(prev => [...prev, { sender: 'system', text: "State your intent or identity." }]);
+        setMessages(prev => [...prev, { sender: 'system', text: "State your name." }]);
         setStep(1);
         setSummonState('active');
       }, 1500);
@@ -53,18 +54,25 @@ export function SummonPanel() {
     setMessages(prev => [...prev, { sender: 'user', text: userText }]);
 
     if (step === 1) {
-      setIntent(userText);
+      setName(userText);
       setTimeout(() => {
-        setMessages(prev => [...prev, { sender: 'system', text: "Intent recorded. A channel requires a contact vector. Provide your email." }]);
+        setMessages(prev => [...prev, { sender: 'system', text: `${userText}. State your intent.` }]);
         setStep(2);
       }, 1000);
     } else if (step === 2) {
+      setIntent(userText);
+      setTimeout(() => {
+        setMessages(prev => [...prev, { sender: 'system', text: "Intent recorded. A channel requires a contact vector. Provide your email." }]);
+        setStep(3);
+      }, 1000);
+    } else if (step === 3) {
       setEmail(userText);
-      setStep(3);
+      setStep(4);
       setSummonState('capturing');
       
       submit({
         source: 'summon',
+        name: name,
         email: userText,
         message: intent,
         route: location,
@@ -74,12 +82,12 @@ export function SummonPanel() {
   };
 
   useEffect(() => {
-    if (step === 3 && isSuccess) {
+    if (step === 4 && isSuccess) {
       setMessages(prev => [...prev, { sender: 'system', text: "Transmission received. The sequence is complete. We will initiate contact." }]);
       setSummonState('complete');
-    } else if (step === 3 && error) {
+    } else if (step === 4 && error) {
       setMessages(prev => [...prev, { sender: 'system', text: `Error in transmission: ${error}` }]);
-      setStep(2);
+      setStep(3);
     }
   }, [isSuccess, error, step, setSummonState]);
 
@@ -88,12 +96,20 @@ export function SummonPanel() {
     setTimeout(() => {
       setStep(0);
       setMessages([]);
+      setName("");
       setEmail("");
       setIntent("");
     }, 500);
   };
 
   if (summonState === 'closed') return null;
+
+  const getPlaceholder = () => {
+    if (step === 1) return "Enter your name...";
+    if (step === 2) return "Enter your intent...";
+    if (step === 3) return "Enter your email...";
+    return "Sequence complete.";
+  };
 
   const panelContent = (
     <>
@@ -153,17 +169,17 @@ export function SummonPanel() {
           />
           
           <input
-            type={step === 2 ? "email" : "text"}
+            type={step === 3 ? "email" : "text"}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            disabled={step === 3 || step === 0 || isPending}
-            placeholder={step === 1 ? "Enter your intent..." : step === 2 ? "Enter your email..." : "Sequence complete."}
+            disabled={step === 4 || step === 0 || isPending}
+            placeholder={getPlaceholder()}
             className="w-full bg-secondary border border-border text-foreground px-4 py-3 pr-14 rounded-none focus:outline-none focus:border-primary disabled:opacity-50 text-sm"
             autoFocus
           />
           <button 
             type="submit" 
-            disabled={!inputValue.trim() || isPending || step === 3 || step === 0}
+            disabled={!inputValue.trim() || isPending || step === 4 || step === 0}
             className="absolute right-0 top-0 bottom-0 px-4 bg-primary text-primary-foreground flex items-center justify-center disabled:opacity-50 hover:bg-primary/90 transition-colors"
           >
             <Send size={16} />

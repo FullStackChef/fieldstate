@@ -1,15 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Reveal } from "@/components/layout/Reveal";
 import { artifacts } from "@/data/content";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus } from "lucide-react";
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 export default function Forge() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
-
-  useEffect(() => {
-    document.title = "The Forge | FieldState";
-  }, []);
+  usePageMeta("The Forge | FieldState", "Artifacts currently maintained, deployed, or under construction within the FieldState infrastructure.");
 
   return (
     <div className="pt-32 pb-24 max-w-5xl mx-auto px-6 relative">

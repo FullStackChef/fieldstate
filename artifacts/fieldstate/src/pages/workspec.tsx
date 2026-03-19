@@ -1,14 +1,11 @@
-import { useEffect } from "react";
 import { Reveal } from "@/components/layout/Reveal";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { useStore } from "@/store";
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 export default function WorkSpec() {
   const setSummonState = useStore(state => state.setSummonState);
-
-  useEffect(() => {
-    document.title = "WorkSpec | FieldState";
-  }, []);
+  usePageMeta("WorkSpec | FieldState", "WorkSpec is the FieldState methodology for building narrative systems. A framework for teams who refuse to build generic software.");
 
   return (
     <div className="pt-32 pb-24 max-w-4xl mx-auto px-6">

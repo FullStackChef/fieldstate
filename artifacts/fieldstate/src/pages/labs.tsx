@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { Reveal } from "@/components/layout/Reveal";
 import { labProjects } from "@/data/content";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { useSubmitLead } from "@/hooks/use-leads";
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 export default function Labs() {
   const [activeProject, setActiveProject] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const { submit, isPending, isSuccess, error, reset } = useSubmitLead();
 
-  useEffect(() => {
-    document.title = "Labs | FieldState";
-  }, []);
+  usePageMeta("Labs | FieldState", "Experimental protocols and unstable artifacts from FieldState. Join waitlists for active lab projects.");
 
   const handleWaitlistSubmit = (e: React.FormEvent, projectId: string) => {
     e.preventDefault();
@@ -20,7 +19,8 @@ export default function Labs() {
       source: 'labs-waitlist',
       email,
       message: `Waitlist request for project: ${projectId}`,
-      route: '/labs'
+      route: '/labs',
+      honeypot: ""
     });
   };
 
@@ -55,6 +55,8 @@ export default function Labs() {
                 <div className="mt-auto">
                   {activeProject === project.id ? (
                     <form onSubmit={(e) => handleWaitlistSubmit(e, project.id)} className="flex space-x-2">
+                      {/* Honeypot */}
+                      <input type="text" name="website" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" aria-hidden="true" readOnly />
                       <input 
                         type="email" 
                         placeholder="Enter email..." 

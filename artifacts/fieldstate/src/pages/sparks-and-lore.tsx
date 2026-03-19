@@ -1,15 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Reveal } from "@/components/layout/Reveal";
 import { archiveCategories, archivePosts } from "@/data/content";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 export default function SparksAndLore() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-
-  useEffect(() => {
-    document.title = "Sparks & Lore | FieldState";
-  }, []);
+  usePageMeta("Sparks & Lore | FieldState", "Theory, practice, and transmissions from the FieldState archive. Filtered by category, sorted by signal.");
 
   const filteredPosts = activeCategory 
     ? archivePosts.filter(p => p.categoryId === activeCategory)

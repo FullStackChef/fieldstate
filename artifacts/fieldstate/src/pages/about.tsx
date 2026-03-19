@@ -1,10 +1,8 @@
-import { useEffect } from "react";
 import { Reveal } from "@/components/layout/Reveal";
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 export default function About() {
-  useEffect(() => {
-    document.title = "About | FieldState";
-  }, []);
+  usePageMeta("About | FieldState", "Understand what FieldState is, how we operate, the forces behind our work, and the technology stack we build on.");
 
   return (
     <div className="pt-32 pb-24 max-w-4xl mx-auto px-6">

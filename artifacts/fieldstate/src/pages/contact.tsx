@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Reveal } from "@/components/layout/Reveal";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { useSubmitLead } from "@/hooks/use-leads";
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 export default function Contact() {
   const { submit, isPending, isSuccess, error } = useSubmitLead();
@@ -13,9 +14,7 @@ export default function Contact() {
     honeypot: ""
   });
 
-  useEffect(() => {
-    document.title = "Contact | FieldState";
-  }, []);
+  usePageMeta("Contact | FieldState", "Establish a direct channel with FieldState. We respond to genuine inquiries within 48 hours.");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

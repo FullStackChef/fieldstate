@@ -1,16 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Reveal } from "@/components/layout/Reveal";
 import { filterStatements } from "@/data/content";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { useSubmitLead } from "@/hooks/use-leads";
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 export default function NotForClients() {
   const { submit, isPending, isSuccess, error } = useSubmitLead();
   const [formData, setFormData] = useState({ email: "", message: "", honeypot: "" });
-
-  useEffect(() => {
-    document.title = "Not For Clients | FieldState";
-  }, []);
+  usePageMeta("Not For Clients | FieldState", "FieldState is not for everyone. Read the anti-portfolio and decide if you qualify before reaching out.");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

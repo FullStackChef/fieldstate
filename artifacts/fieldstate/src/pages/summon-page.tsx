@@ -2,15 +2,16 @@ import { useEffect } from "react";
 import { useStore } from "@/store";
 import { SummonPanel } from "@/components/summon/SummonPanel";
 import { Reveal } from "@/components/layout/Reveal";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 // This page renders the UI explanation of Summon and automatically opens the panel, 
 // or provides a manual trigger if they closed it.
 export default function SummonPage() {
   const { setSummonState, summonState } = useStore();
 
+  usePageMeta("Summon | FieldState", "Initiate a connection sequence with FieldState. A guided conversation to understand your intent and establish contact.");
   useEffect(() => {
-    document.title = "Summon | FieldState";
     // Auto-open on mount if closed
     if (summonState === 'closed') {
       setTimeout(() => setSummonState('open'), 500);

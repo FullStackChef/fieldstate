@@ -1,10 +1,8 @@
-import { useEffect } from "react";
 import { Reveal } from "@/components/layout/Reveal";
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 export default function Mythos() {
-  useEffect(() => {
-    document.title = "Mythos | FieldState";
-  }, []);
+  usePageMeta("Mythos | FieldState", "The FieldState origin story and philosophical framework. Understand the principles that guide everything we build.");
 
   return (
     <div className="pt-32 pb-24 max-w-3xl mx-auto px-6">

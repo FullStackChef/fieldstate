@@ -1,11 +1,9 @@
-import { useEffect } from "react";
 import { Reveal } from "@/components/layout/Reveal";
 import { builders } from "@/data/content";
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 export default function Builders() {
-  useEffect(() => {
-    document.title = "Builders | FieldState";
-  }, []);
+  usePageMeta("Builders | FieldState", "Meet the forces operating within FieldState. A convergence of distinct disciplines yielding unified systems.");
 
   return (
     <div className="pt-32 pb-24 max-w-6xl mx-auto px-6">

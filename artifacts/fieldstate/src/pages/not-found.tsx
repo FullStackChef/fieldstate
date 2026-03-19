@@ -1,8 +1,10 @@
 import { Link } from "wouter";
 import { Reveal } from "@/components/layout/Reveal";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 export default function NotFound() {
+  usePageMeta("404 — Void State | FieldState", "The coordinate you requested does not exist within the FieldState architecture.");
   return (
     <div className="min-h-screen flex flex-col items-center justify-center text-center px-4 noise-bg">
       <Reveal>

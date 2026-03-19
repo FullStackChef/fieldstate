@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Reveal } from "@/components/layout/Reveal";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { statements } from "@/data/content";
+import { usePageMeta } from "@/hooks/use-page-meta";
 
 export default function Home() {
   const [statementIndex, setStatementIndex] = useState(0);
+  usePageMeta("FieldState | Narrative Architecture", "FieldState is a narrative-driven design and engineering collective. We build systems that speak with intention.");
 
   useEffect(() => {
-    document.title = "FieldState | Narrative Architecture";
-    
     const interval = setInterval(() => {
       setStatementIndex((prev) => (prev + 1) % statements.length);
     }, 4000);

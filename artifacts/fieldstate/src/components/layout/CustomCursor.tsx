@@ -1,74 +1,73 @@
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect } from "react";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useStore } from "@/store";
 
 export function CustomCursor() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const cursorState = useStore((state) => state.cursorState);
   const setCursorState = useStore((state) => state.setCursorState);
 
+  const rawX = useMotionValue(-100);
+  const rawY = useMotionValue(-100);
+
+  const springConfig = { stiffness: 800, damping: 60, mass: 0.5 };
+  const x = useSpring(rawX, springConfig);
+  const y = useSpring(rawY, springConfig);
+
   useEffect(() => {
-    // Only active on desktop
     if (window.innerWidth < 1024) return;
 
-    const updateMousePosition = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+    const onMove = (e: MouseEvent) => {
+      rawX.set(e.clientX);
+      rawY.set(e.clientY);
     };
 
-    const handleMouseOver = (e: MouseEvent) => {
+    const onOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       if (
-        target.tagName.toLowerCase() === 'a' ||
-        target.tagName.toLowerCase() === 'button' ||
-        target.closest('a') ||
-        target.closest('button') ||
-        target.classList.contains('interactive')
+        target.tagName.toLowerCase() === "a" ||
+        target.tagName.toLowerCase() === "button" ||
+        target.closest("a") ||
+        target.closest("button") ||
+        target.classList.contains("interactive")
       ) {
-        setCursorState('interactive');
+        setCursorState("interactive");
       } else {
-        setCursorState('default');
+        setCursorState("default");
       }
     };
 
-    window.addEventListener("mousemove", updateMousePosition);
-    window.addEventListener("mouseover", handleMouseOver);
-
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseover", onOver);
     return () => {
-      window.removeEventListener("mousemove", updateMousePosition);
-      window.removeEventListener("mouseover", handleMouseOver);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseover", onOver);
     };
-  }, [setCursorState]);
+  }, [rawX, rawY, setCursorState]);
 
-  if (window.innerWidth < 1024 || cursorState === 'hidden') return null;
+  if (typeof window !== "undefined" && window.innerWidth < 1024) return null;
+  if (cursorState === "hidden") return null;
 
-  const variants = {
-    default: {
-      x: mousePosition.x - 8,
-      y: mousePosition.y - 8,
-      height: 16,
-      width: 16,
-      backgroundColor: "hsl(var(--primary))",
-      mixBlendMode: "difference" as const,
-      opacity: 1
-    },
-    interactive: {
-      x: mousePosition.x - 24,
-      y: mousePosition.y - 24,
-      height: 48,
-      width: 48,
-      backgroundColor: "transparent",
-      border: "1px solid hsl(var(--primary))",
-      mixBlendMode: "normal" as const,
-      opacity: 0.8
-    }
-  };
+  const isInteractive = cursorState === "interactive";
+  const offset = isInteractive ? 24 : 8;
+  const size = isInteractive ? 48 : 16;
 
   return (
     <motion.div
       className="fixed top-0 left-0 rounded-full pointer-events-none z-[9999]"
-      variants={variants}
-      animate={cursorState}
-      transition={{ type: "spring", stiffness: 500, damping: 28, mass: 2 }}
+      style={{
+        x,
+        y,
+        translateX: -offset,
+        translateY: -offset,
+        width: size,
+        height: size,
+        backgroundColor: isInteractive ? "transparent" : "hsl(var(--primary))",
+        border: isInteractive ? "1px solid hsl(var(--primary))" : "none",
+        mixBlendMode: isInteractive ? "normal" : "difference",
+        opacity: isInteractive ? 0.8 : 1,
+      }}
+      animate={{ width: size, height: size, translateX: -offset, translateY: -offset }}
+      transition={{ type: "spring", stiffness: 600, damping: 40, mass: 0.4 }}
     />
   );
 }

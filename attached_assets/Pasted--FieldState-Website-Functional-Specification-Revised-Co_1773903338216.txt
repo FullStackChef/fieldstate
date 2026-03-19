@@ -1,0 +1,662 @@
+# FieldState Website Functional Specification (Revised & Complete)
+
+---
+
+## 1. Purpose
+
+This document defines the full functional, structural, and behavioral requirements for delivering the FieldState website as a production-ready narrative product experience.
+
+The website is not a static marketing site. It is an interactive, narrative-driven system that combines:
+
+* editorial storytelling,
+* structured content presentation,
+* guided interaction (summon),
+* and lead capture flows.
+
+This specification ensures all features are implemented coherently, consistently, and with clear system boundaries.
+
+---
+
+## 2. Core System Definition
+
+The FieldState website is a **client-rendered React SPA** with:
+
+* centralized content structures,
+* global UI state management,
+* unified lead capture infrastructure,
+* and a hybrid interaction model (scripted + optional AI augmentation).
+
+The system must behave as a **cohesive product**, not a collection of pages.
+
+---
+
+## 3. Architectural Overview
+
+### 3.1 Frontend Stack
+
+* React + TypeScript + Vite
+* React Router for routing
+* Centralized state (Zustand or equivalent)
+* Component-driven architecture
+
+### 3.2 Required Core Layers
+
+#### 3.2.1 UI Layer
+
+* Page components
+* Layout shell
+* Shared components (cards, sections, forms)
+
+#### 3.2.2 State Layer
+
+Global UI state must be managed centrally:
+
+* summon state
+* ceremonial mode
+* navigation/menu state
+* loading state
+* cursor state
+
+#### 3.2.3 Content Layer
+
+All structured content must be defined in centralized data modules or CMS:
+
+* no duplicated inline content across pages
+
+#### 3.2.4 Service Layer
+
+All external interactions must go through services:
+
+* lead submission service
+* analytics service
+* optional AI/summon service
+
+---
+
+## 4. Global UI State Model
+
+The following global states must be explicitly defined and controlled.
+
+### 4.1 Summon State
+
+States:
+
+* closed
+* open
+* active (conversation in progress)
+* capturing (collecting contact data)
+* complete
+
+Rules:
+
+* persists across route changes unless dismissed
+* resets on explicit user action
+* only one instance active at a time
+
+---
+
+### 4.2 Ceremonial Mode State
+
+States:
+
+* on
+* off
+
+Behavior:
+
+* toggles global CSS class on `<body>`
+* affects styling across all pages
+* must not break layout or readability
+
+Persistence:
+
+* optional localStorage persistence
+
+---
+
+### 4.3 Navigation State
+
+States:
+
+* desktop (always visible)
+* mobile closed
+* mobile open
+
+Rules:
+
+* mobile menu closes on route change
+* active route is always highlighted
+
+---
+
+### 4.4 Loading State
+
+States:
+
+* initial loading
+* ready
+
+Behavior:
+
+* only shown on first app load
+* must not re-trigger on route changes
+
+---
+
+### 4.5 Cursor State (Desktop Only)
+
+States:
+
+* default
+* interactive (hovering clickable)
+* hidden (outside viewport)
+
+---
+
+## 5. Routing System
+
+### 5.1 Required Routes
+
+All routes must be registered and functional:
+
+* `/`
+* `/mythos`
+* `/builders`
+* `/forge`
+* `/sparks-and-lore`
+* `/about`
+* `/labs`
+* `/workspec`
+* `/contact`
+* `/not-for-clients`
+* `/summon` (optional standalone)
+* `*` (404)
+
+---
+
+### 5.2 Routing Behavior
+
+* scroll to top on route change
+* update active navigation state
+* update document metadata per route
+* unknown routes → branded 404 page
+
+---
+
+## 6. Layout Shell
+
+All pages must render within a shared shell:
+
+* fixed header
+* main content container
+* footer
+* summon entry trigger
+* ceremonial toggle
+* global cursor layer
+* loading overlay (initial only)
+
+---
+
+## 7. Content Management Model
+
+### 7.1 Content Source Strategy
+
+Content must be centralized and not duplicated.
+
+Allowed approaches:
+
+* structured local data files (initial)
+* or headless CMS (production-ready)
+
+Hybrid approach recommended:
+
+* static narrative content in code
+* dynamic content (posts, labs, artifacts) via CMS or JSON layer
+
+---
+
+### 7.2 Content Entities
+
+#### 7.2.1 Statements
+
+* id
+* text
+* usage context (loading, hero, etc.)
+
+---
+
+#### 7.2.2 Navigation Links
+
+* label
+* path
+* title
+* placement (header/footer)
+
+---
+
+#### 7.2.3 Builders
+
+* id
+* name
+* role/title
+* description
+* icon/glyph
+
+---
+
+#### 7.2.4 Artifacts (Forge)
+
+* id
+* name
+* description
+* status
+* builder reference
+* icon
+
+---
+
+#### 7.2.5 Archive Categories
+
+* id
+* label
+* description
+* icon
+
+---
+
+#### 7.2.6 Archive Posts
+
+* id
+* title
+* categoryId
+* date
+* excerpt
+* optional content/body
+
+---
+
+#### 7.2.7 Lab Projects
+
+* id
+* name
+* description
+* status
+* icon
+
+---
+
+#### 7.2.8 Filter Statements (Not For Clients)
+
+* id
+* statement text
+
+---
+
+## 8. Summon System (Defined)
+
+### 8.1 Purpose
+
+The summon system is a **guided narrative interaction funnel**, not a general chatbot.
+
+Primary goals:
+
+* engage the visitor
+* qualify intent
+* capture contact information
+
+---
+
+### 8.2 Interaction Model
+
+Hybrid system:
+
+* scripted conversation tree (primary)
+* optional AI augmentation (secondary, non-blocking)
+
+---
+
+### 8.3 Conversation Structure
+
+Each summon session follows:
+
+1. Entry
+2. Contextual greeting (based on route)
+3. Intent branching
+4. Exploration or probing
+5. Contact capture trigger
+6. Completion
+
+---
+
+### 8.4 Triggering Context
+
+Summon must adapt based on:
+
+* current route
+* entry point (button, CTA, labs, etc.)
+
+---
+
+### 8.5 Contact Capture
+
+Triggered when:
+
+* user expresses interest
+* user reaches defined conversation node
+* user explicitly requests contact
+
+Fields:
+
+* name (optional)
+* email (required)
+* message/context (optional or derived)
+
+---
+
+### 8.6 Exit Conditions
+
+* user closes summon
+* submission completed
+* conversation reset
+
+---
+
+### 8.7 Standalone Summon Route
+
+If `/summon` exists:
+
+* must use same logic and state as modal
+
+If removed:
+
+* all summon links must open modal instead
+
+---
+
+## 9. Lead Capture System (Unified)
+
+### 9.1 Entry Points
+
+All must use the same backend/service:
+
+* Contact form
+* Not For Clients form
+* Summon
+* Labs waitlist
+
+---
+
+### 9.2 Payload Structure
+
+Each submission must include:
+
+* id (generated)
+* source (page/feature)
+* name (optional)
+* email (required for contact flows)
+* message/content
+* timestamp
+* metadata:
+
+  * route
+  * trigger context
+  * inquiry type (if applicable)
+
+---
+
+### 9.3 Validation
+
+* required fields enforced
+* email format validation
+* minimum message length (optional)
+
+---
+
+### 9.4 Delivery
+
+Must implement at least one:
+
+* email delivery service
+* serverless endpoint
+* database-backed API
+
+---
+
+### 9.5 Anti-Spam
+
+Required:
+
+* honeypot field or CAPTCHA
+* basic rate limiting
+
+---
+
+### 9.6 Response States
+
+* loading
+* success
+* error
+
+All must be visible to user.
+
+---
+
+## 10. Page Functional Requirements
+
+### 10.1 Home
+
+* hero statement rotation (from statements content)
+* primary CTAs → Mythos, Forge
+* core principles section
+
+---
+
+### 10.2 Mythos
+
+* long-form narrative sections
+* structured reading flow
+
+---
+
+### 10.3 Builders
+
+* builder cards
+* narrative descriptions
+
+---
+
+### 10.4 Forge
+
+* artifact cards
+* expandable structure for future detail pages
+
+---
+
+### 10.5 Sparks, Echoes & Lore
+
+* category filter system
+* post listing
+* clear filter/reset behavior
+
+---
+
+### 10.6 About
+
+* system explanation
+* team/forces
+* stack overview
+
+---
+
+### 10.7 Labs
+
+* project cards
+* status indicators
+* CTA → summon or waitlist
+
+---
+
+### 10.8 WorkSpec
+
+* feature explanation
+* conversion CTA
+
+---
+
+### 10.9 Contact
+
+* structured form
+* submission handling via service
+
+---
+
+### 10.10 Not For Clients
+
+* filter statements
+* reflective submission form
+* submission handling
+
+---
+
+### 10.11 404
+
+* branded message
+* link back to home
+
+---
+
+## 11. Interaction Systems
+
+### 11.1 Reveal-on-Scroll
+
+* trigger once per element
+* configurable delay
+
+---
+
+### 11.2 Navigation Behavior
+
+* fixed header
+* scroll-based styling change
+
+---
+
+### 11.3 Mobile Adaptation
+
+* summon becomes bottom sheet
+* menu becomes overlay
+
+---
+
+## 12. Responsiveness
+
+Must support:
+
+* mobile
+* tablet
+* desktop
+
+Requirements:
+
+* no horizontal overflow
+* touch-friendly controls
+* readable typography
+
+---
+
+## 13. Accessibility
+
+Must include:
+
+* keyboard navigation
+* focus states
+* semantic structure
+* labeled inputs
+* sufficient contrast
+* reduced motion support (recommended)
+
+---
+
+## 14. Performance
+
+* minimal bundle size
+* optimized animations
+* fast route transitions
+* no blocking data dependencies
+
+---
+
+## 15. SEO & Metadata
+
+Each route must define:
+
+* title
+* meta description
+* social metadata
+
+---
+
+## 16. Analytics
+
+Track:
+
+* page views
+* CTA clicks
+* summon opens/interactions
+* form submissions
+* errors
+
+---
+
+## 17. Content Boundaries (Critical)
+
+To prevent conceptual overlap:
+
+* **Forge** = completed tools/artifacts
+* **Labs** = experimental/in-progress work
+* **WorkSpec** = flagship framework/system
+
+These distinctions must be enforced in both:
+
+* content
+* UI presentation
+
+---
+
+## 18. Acceptance Criteria
+
+The system is complete when:
+
+1. All routes exist and resolve correctly
+2. All navigation links are functional
+3. All forms submit successfully
+4. Summon behaves consistently across entry points
+5. Content is centrally managed
+6. No duplicated inline content exists
+7. UI states do not conflict
+8. Mobile and desktop experiences are stable
+9. Metadata is route-specific
+10. No placeholder or dead features remain
+
+---
+
+## 19. Non-Negotiable Constraints
+
+* No visual-only forms
+* No broken routes
+* No duplicated content structures
+* No undefined interaction logic
+* No disconnected submission flows
+
+---
+
+## 20. System Definition Summary
+
+FieldState is a:
+
+* narrative interface system,
+* structured content platform,
+* guided interaction funnel,
+* and lead capture engine.
+
+All features must align to this unified model.

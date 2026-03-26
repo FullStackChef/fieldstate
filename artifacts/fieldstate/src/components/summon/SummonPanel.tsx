@@ -7,9 +7,9 @@ import { useLocation } from "wouter";
 export function SummonPanel() {
   const { summonState, setSummonState } = useStore();
   const [location] = useLocation();
-  const isPending = step === 4 && summonState === 'capturing';
   
   const [step, setStep] = useState(0);
+  const isPending = step === 4 && summonState === 'capturing';
   const [messages, setMessages] = useState<{sender: 'system' | 'user', text: string}[]>([]);
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);

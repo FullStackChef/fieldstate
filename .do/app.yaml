@@ -23,8 +23,8 @@ services:
       corepack enable &&
       pnpm install --frozen-lockfile &&
       pnpm --filter @workspace/api-server run build
-    run_command: node artifacts/api-server/dist/index.cjs
-    http_port: 3001
+    run_command: pnpm --filter @workspace/api-server run start
+    http_port: 8080
     health_check:
       http_path: /api/healthz
       initial_delay_seconds: 10
@@ -36,7 +36,7 @@ services:
         value: production
         scope: RUN_AND_BUILD_TIME
       - key: PORT
-        value: "3001"
+        value: "8080"
         scope: RUN_AND_BUILD_TIME
       - key: OPENAI_MODEL
         value: gpt-4.1-mini
@@ -54,9 +54,8 @@ services:
       corepack enable &&
       pnpm install --frozen-lockfile &&
       pnpm --filter @workspace/fieldstate run build
-    run_command: >-
-      pnpm --filter @workspace/fieldstate run serve -- --host 0.0.0.0 --port 4173
-    http_port: 4173
+    run_command: pnpm --filter @workspace/fieldstate run start
+    http_port: 8080
     envs:
       - key: NODE_ENV
         value: production
@@ -65,5 +64,5 @@ services:
         value: /
         scope: RUN_AND_BUILD_TIME
       - key: PORT
-        value: "4173"
+        value: "8080"
         scope: RUN_AND_BUILD_TIME

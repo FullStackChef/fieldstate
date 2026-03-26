@@ -11,7 +11,7 @@ name: fieldstate-staging
 region: syd
 
 domains:
-  - domain: staging.fieldstate.nz
+  - domain: staging.fieldstate.io
     type: PRIMARY
 
 ingress:

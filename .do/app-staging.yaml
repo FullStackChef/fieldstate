@@ -1,0 +1,111 @@
+# DigitalOcean App Platform spec - STAGING
+#
+# Usage:
+#   1. Create app once: doctl apps create --spec .do/app-staging.yaml
+#   2. DigitalOcean will auto-deploy whenever main is pushed.
+#
+# deploy_on_push: true means DO watches the GitHub repo directly.
+# No GitHub Actions secrets or doctl token required for deployments.
+
+name: fieldstate-staging
+region: syd
+
+domains:
+  - domain: staging.fieldstate.nz
+    type: PRIMARY
+
+ingress:
+  rules:
+    - component:
+        name: api
+      match:
+        path:
+          prefix: /api
+    - component:
+        name: frontend
+      match:
+        path:
+          prefix: /
+
+jobs:
+  # - name: migrate
+  #   kind: PRE_DEPLOY
+  #   github:
+  #     repo: FullStackChef/coffers
+  #     branch: main
+  #     deploy_on_push: true
+  #   build_command: corepack enable && pnpm install --frozen-lockfile
+  #   run_command: pnpm --filter @workspace/db run push
+  #   envs:
+  #     - key: DATABASE_URL
+  #       value: ${db.DATABASE_URL}
+  #       scope: RUN_TIME
+  #   instance_size_slug: apps-s-1vcpu-0.5gb
+  #   instance_count: 1
+
+services:
+  - name: api
+    github:
+      repo: FullStackChef/fieldstate
+      branch: main
+      deploy_on_push: true
+    build_command: >-
+      corepack enable &&
+      pnpm install --frozen-lockfile &&
+      pnpm --filter @workspace/api-server run build
+    run_command: node artifacts/api-server/dist/index.cjs
+    http_port: 3001
+    instance_size_slug: apps-s-1vcpu-0.5gb
+    instance_count: 1
+    health_check:
+      http_path: /api/healthz
+      initial_delay_seconds: 10
+      period_seconds: 30
+      timeout_seconds: 5
+      failure_threshold: 3
+    envs:
+      - key: NODE_ENV
+        value: production
+        scope: RUN_AND_BUILD_TIME
+      - key: PORT
+        value: "3001"
+        scope: RUN_AND_BUILD_TIME
+      - key: BASE_PATH
+        value: /
+        scope: BUILD_TIME
+      # - key: DATABASE_URL
+      #   value: ${db.DATABASE_URL}
+        scope: RUN_TIME
+      - key: ANTHROPIC_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+
+static_sites:
+  - name: frontend
+    github:
+      repo: FullStackChef/fieldstate
+      branch: main
+      deploy_on_push: true
+    build_command: >-
+      corepack enable &&
+      pnpm install --frozen-lockfile &&
+      pnpm --filter "./artifacts/fieldstate" run build
+    output_dir: artifacts/fieldstate/dist/public
+    catchall_document: index.html
+    envs:
+      - key: NODE_ENV
+        value: production
+        scope: BUILD_TIME
+      - key: PORT
+        value: "3000"
+        scope: BUILD_TIME
+      - key: BASE_PATH
+        value: /
+        scope: BUILD_TIME
+
+# databases:
+#   - name: db
+#     engine: PG
+#     version: "16"
+#     size: db-s-1vcpu-1gb
+#     num_nodes: 1

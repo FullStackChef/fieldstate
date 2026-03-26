@@ -1,0 +1,27 @@
+name: fieldstate
+services:
+  # Frontend SPA
+  - dockerfile_path: ./Dockerfile.frontend
+    github:
+      branch: main
+      deploy_on_push: true
+      repo: brettsmith/FieldState
+    http_port: 4173
+    name: fieldstate-frontend
+    source_dir: ./
+  # API Backend
+  - dockerfile_path: ./Dockerfile.api
+    github:
+      branch: main
+      deploy_on_push: true
+      repo: brettsmith/FieldState
+    http_port: 3001
+    name: fieldstate-api
+    source_dir: ./
+    envs:
+      - key: OPENAI_API_KEY
+        scope: RUN_AND_BUILD_TIME
+        value: ${OPENAI_API_KEY}
+      - key: OPENAI_MODEL
+        scope: RUN_AND_BUILD_TIME
+        value: gpt-4.1-mini

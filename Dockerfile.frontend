@@ -1,0 +1,36 @@
+# Build frontend
+FROM node:24-alpine AS builder
+
+WORKDIR /app
+
+# Install pnpm
+RUN corepack enable pnpm
+
+# Copy workspace files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY artifacts/fieldstate ./artifacts/fieldstate
+COPY lib/api-client-react ./lib/api-client-react
+COPY lib/api-zod ./lib/api-zod
+COPY tsconfig*.json ./
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Build frontend
+RUN pnpm --filter @workspace/fieldstate build
+
+# Serve frontend with a simple HTTP server
+FROM node:24-alpine
+
+WORKDIR /app
+
+# Install serve to run the static app
+RUN npm install -g serve
+
+# Copy built assets from builder
+COPY --from=builder /app/artifacts/fieldstate/dist/public ./public
+
+EXPOSE 4173
+
+# Serve on port from environment or default to 4173
+CMD ["sh", "-c", "serve -l ${PORT:-4173} /app/public"]

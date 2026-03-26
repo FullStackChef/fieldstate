@@ -1,52 +1,57 @@
 # DigitalOcean Staging
 
-This project now uses the same App Platform shape as RippleApp:
+This project uses the same App Platform model as RippleApp:
 
-- `services`: API backend
-- `static_sites`: frontend SPA
-- `ingress`: `/api` routes to API and `/` routes to frontend
+- one `service` for API
+- one `static_site` for the frontend
+- ingress rules for `/api` and `/`
 
-The deploy spec lives at `.do/app.yaml`.
+The source of truth is [.do/app.yaml](.do/app.yaml).
 
-## What this gives you
+## Why your current deploy failed
 
-- Frontend and API deploy together from one app spec
-- Public routing handled by DigitalOcean ingress
-- No separate frontend proxy setup required
-- Riley can call `/api/riley` directly in staging
+The error `determine start command: when there is no default process a command is required` means a DO component is currently treated as a service without a valid run command.
 
-## Deploy with doctl
+In this repo, the frontend should be a `static_site` component named `fieldstate`, not a runnable service process.
 
-1. Create the app once:
+## Current expected component layout
+
+From [.do/app.yaml](.do/app.yaml):
+
+- `api` (service)
+  - build: `corepack enable && pnpm install --frozen-lockfile && pnpm --filter @workspace/api-server run build`
+  - run: `node artifacts/api-server/dist/index.cjs`
+  - health: `/api/healthz`
+
+- `fieldstate` (static site)
+  - build: `corepack enable && pnpm install --frozen-lockfile && pnpm --filter @workspace/fieldstate run build`
+  - output: `artifacts/fieldstate/dist/public`
+  - catch-all: `index.html`
+
+- ingress
+  - `/api` -> `api`
+  - `/` -> `fieldstate`
+
+## Fix in DigitalOcean
+
+If this app already exists in DO and has an old `fieldstate` service component, replace its config with the spec:
+
+```bash
+doctl apps list
+doctl apps update <APP_ID> --spec .do/app.yaml
+```
+
+If update still preserves old/bad components, recreate once from spec:
 
 ```bash
 doctl apps create --spec .do/app.yaml
 ```
 
-2. After creation, DO will auto-deploy on pushes to `main` because `deploy_on_push: true` is enabled for both components.
+Then set runtime secret on the `api` component:
 
-3. In App Platform settings, set runtime secret:
-
-- `OPENAI_API_KEY` on the `api` component
-
-## Spec details (matches RippleApp pattern)
-
-- API component:
-	- Build: `corepack enable && pnpm install --frozen-lockfile && pnpm --filter @workspace/api-server run build`
-	- Run: `node artifacts/api-server/dist/index.cjs`
-	- Port: `3001`
-	- Health check: `/api/healthz`
-
-- Frontend component:
-	- Build: `corepack enable && pnpm install --frozen-lockfile && pnpm --filter @workspace/fieldstate run build`
-	- Output: `artifacts/fieldstate/dist/public`
-	- Catch-all: `index.html`
-
-- Ingress routing:
-	- `/api` -> `api`
-	- `/` -> `frontend`
+- `OPENAI_API_KEY`
 
 ## Notes
 
-- `VITE_API_BASE_URL` is not required for DO staging with ingress routing.
-- API also runs locally without setting `PORT` (defaults to `3001`).
+- `VITE_API_BASE_URL` is not required in this ingress setup.
+- API defaults to `PORT=3001`.

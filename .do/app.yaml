@@ -8,7 +8,7 @@ ingress:
         path:
           prefix: /api
     - component:
-        name: frontend
+        name: fieldstate
       match:
         path:
           prefix: /
@@ -46,7 +46,7 @@ services:
         type: SECRET
 
 static_sites:
-  - name: frontend
+  - name: fieldstate
     github:
       repo: FullStackChef/fieldstate
       branch: main

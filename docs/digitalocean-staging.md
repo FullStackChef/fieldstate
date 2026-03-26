@@ -1,9 +1,9 @@
 # DigitalOcean Staging
 
-This project uses the same App Platform model as RippleApp:
+This project uses App Platform with explicit startup commands for both components:
 
 - one `service` for API
-- one `static_site` for the frontend
+- one `service` for frontend (`fieldstate`)
 - ingress rules for `/api` and `/`
 
 The source of truth is [.do/app.yaml](.do/app.yaml).
@@ -12,7 +12,7 @@ The source of truth is [.do/app.yaml](.do/app.yaml).
 
 The error `determine start command: when there is no default process a command is required` means a DO component is currently treated as a service without a valid run command.
 
-In this repo, the frontend should be a `static_site` component named `fieldstate`, not a runnable service process.
+In this repo, `fieldstate` is now a runnable service with an explicit `run_command`, so DO no longer needs to infer a default process.
 
 ## Current expected component layout
 
@@ -23,10 +23,9 @@ From [.do/app.yaml](.do/app.yaml):
   - run: `node artifacts/api-server/dist/index.cjs`
   - health: `/api/healthz`
 
-- `fieldstate` (static site)
+- `fieldstate` (service)
   - build: `corepack enable && pnpm install --frozen-lockfile && pnpm --filter @workspace/fieldstate run build`
-  - output: `artifacts/fieldstate/dist/public`
-  - catch-all: `index.html`
+  - run: `pnpm --filter @workspace/fieldstate run serve -- --host 0.0.0.0 --port 4173`
 
 - ingress
   - `/api` -> `api`

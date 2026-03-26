@@ -45,7 +45,6 @@ services:
         scope: RUN_TIME
         type: SECRET
 
-static_sites:
   - name: fieldstate
     github:
       repo: FullStackChef/fieldstate
@@ -55,15 +54,16 @@ static_sites:
       corepack enable &&
       pnpm install --frozen-lockfile &&
       pnpm --filter @workspace/fieldstate run build
-    output_dir: artifacts/fieldstate/dist/public
-    catchall_document: index.html
+    run_command: >-
+      pnpm --filter @workspace/fieldstate run serve -- --host 0.0.0.0 --port 4173
+    http_port: 4173
     envs:
       - key: NODE_ENV
         value: production
-        scope: BUILD_TIME
+        scope: RUN_AND_BUILD_TIME
       - key: BASE_PATH
         value: /
-        scope: BUILD_TIME
+        scope: RUN_AND_BUILD_TIME
       - key: PORT
         value: "4173"
-        scope: BUILD_TIME
+        scope: RUN_AND_BUILD_TIME

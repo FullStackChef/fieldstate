@@ -1,27 +1,69 @@
-name: fieldstate
+name: fieldstate-staging
+
+ingress:
+  rules:
+    - component:
+        name: api
+      match:
+        path:
+          prefix: /api
+    - component:
+        name: frontend
+      match:
+        path:
+          prefix: /
+
 services:
-  # Frontend SPA
-  - dockerfile_path: ./Dockerfile.frontend
+  - name: api
     github:
+      repo: FullStackChef/fieldstate
       branch: main
       deploy_on_push: true
-      repo: brettsmith/FieldState
-    http_port: 4173
-    name: fieldstate-frontend
-    source_dir: ./
-  # API Backend
-  - dockerfile_path: ./Dockerfile.api
-    github:
-      branch: main
-      deploy_on_push: true
-      repo: brettsmith/FieldState
+    build_command: >-
+      corepack enable &&
+      pnpm install --frozen-lockfile &&
+      pnpm --filter @workspace/api-server run build
+    run_command: node artifacts/api-server/dist/index.cjs
     http_port: 3001
-    name: fieldstate-api
-    source_dir: ./
+    health_check:
+      http_path: /api/healthz
+      initial_delay_seconds: 10
+      period_seconds: 30
+      timeout_seconds: 5
+      failure_threshold: 3
     envs:
-      - key: OPENAI_API_KEY
+      - key: NODE_ENV
+        value: production
         scope: RUN_AND_BUILD_TIME
-        value: ${OPENAI_API_KEY}
+      - key: PORT
+        value: "3001"
+        scope: RUN_AND_BUILD_TIME
       - key: OPENAI_MODEL
-        scope: RUN_AND_BUILD_TIME
         value: gpt-4.1-mini
+        scope: RUN_TIME
+      - key: OPENAI_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+
+static_sites:
+  - name: frontend
+    github:
+      repo: FullStackChef/fieldstate
+      branch: main
+      deploy_on_push: true
+    build_command: >-
+      corepack enable &&
+      pnpm install --frozen-lockfile &&
+      pnpm --filter @workspace/fieldstate run build
+    output_dir: artifacts/fieldstate/dist/public
+    catchall_document: index.html
+    envs:
+      - key: NODE_ENV
+        value: production
+        scope: BUILD_TIME
+      - key: BASE_PATH
+        value: /
+        scope: BUILD_TIME
+      - key: PORT
+        value: "4173"
+        scope: BUILD_TIME

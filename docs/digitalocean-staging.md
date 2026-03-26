@@ -1,65 +1,52 @@
-# DigitalOcean staging
+# DigitalOcean Staging
 
-This repo can be staged on DigitalOcean as a frontend-only App Platform static site.
+This project now uses the same App Platform shape as RippleApp:
 
-## Recommended shape
+- `services`: API backend
+- `static_sites`: frontend SPA
+- `ingress`: `/api` routes to API and `/` routes to frontend
 
-- App type: `Static Site`
-- Purpose: stage the UX only
-- Backend requirement: none
-- Riley behavior in staging: falls back locally if `/api/riley` is unavailable
+The deploy spec lives at `.do/app.yaml`.
 
-## Build settings
+## What this gives you
 
-Use the repo root as the app source so pnpm workspace resolution still works.
+- Frontend and API deploy together from one app spec
+- Public routing handled by DigitalOcean ingress
+- No separate frontend proxy setup required
+- Riley can call `/api/riley` directly in staging
 
-- Source directory: repo root
-- Build command: `pnpm install --frozen-lockfile && pnpm --filter @workspace/fieldstate build`
-- Output directory: `artifacts/fieldstate/dist/public`
-- Index document: `index.html`
-- Catch-all / rewrite: route all paths to `index.html`
+## Deploy with doctl
 
-## App environment variables
+1. Create the app once:
 
-Set these as build-time env vars in DigitalOcean App Platform:
+```bash
+doctl apps create --spec .do/app.yaml
+```
 
-- `BASE_PATH=/`
-- `PORT=4173`
-- `VITE_API_BASE_URL=`
+2. After creation, DO will auto-deploy on pushes to `main` because `deploy_on_push: true` is enabled for both components.
 
-Notes:
+3. In App Platform settings, set runtime secret:
 
-- `BASE_PATH=/` keeps the SPA rooted at the domain root.
-- `PORT` is not used by the static output itself, but the Vite config expects a valid numeric default for preview/server settings.
-- Leave `VITE_API_BASE_URL` empty for frontend-only staging. Riley will fall back in-browser if the API is not present.
+- `OPENAI_API_KEY` on the `api` component
 
-## Deploy flow
+## Spec details (matches RippleApp pattern)
 
-1. In DigitalOcean, create a new App Platform app from this GitHub repo.
-2. Choose the branch you want to use for staging.
-3. Configure it as a `Static Site` component.
-4. Set the build and output values above.
-5. Add the build-time env vars above.
-6. Add SPA catch-all routing to `index.html`.
-7. Deploy.
+- API component:
+	- Build: `corepack enable && pnpm install --frozen-lockfile && pnpm --filter @workspace/api-server run build`
+	- Run: `node artifacts/api-server/dist/index.cjs`
+	- Port: `3001`
+	- Health check: `/api/healthz`
 
-## What works in this staging setup
+- Frontend component:
+	- Build: `corepack enable && pnpm install --frozen-lockfile && pnpm --filter @workspace/fieldstate run build`
+	- Output: `artifacts/fieldstate/dist/public`
+	- Catch-all: `index.html`
 
-- Landing pages and navigation
-- Visual UX review
-- Riley UI shell and local fallback behavior
-- Static content and route testing
+- Ingress routing:
+	- `/api` -> `api`
+	- `/` -> `frontend`
 
-## What does not work in this staging setup
+## Notes
 
-- Live backend endpoints
-- Persistent lead capture
-- Any server-side integration that depends on `/api/*`
-
-## If you want a slightly richer staging next
-
-The next step is adding the API as a second App Platform component and setting:
-
-- frontend `VITE_API_BASE_URL` to the API hostname
-- frontend proxying off for production
-- backend runtime env vars separately
+- `VITE_API_BASE_URL` is not required for DO staging with ingress routing.
+- API also runs locally without setting `PORT` (defaults to `3001`).

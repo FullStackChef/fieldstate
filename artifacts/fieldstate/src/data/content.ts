@@ -1,122 +1,79 @@
-export const statements = [
-  "We build what matters.",
-  "Narrative driven execution.",
-  "Beyond the surface layer.",
-  "Precision in the unsaid.",
-  "Systems of deep resonance.",
-  "The architecture of intent.",
-  "Design as a philosophy.",
-  "Function meets ceremony."
-];
-
 export const navigation = [
-  { label: "Mythos", path: "/mythos" },
-  { label: "Builders", path: "/builders" },
-  { label: "Forge", path: "/forge" },
-  { label: "Sparks & Lore", path: "/sparks-and-lore" },
-  { label: "Labs", path: "/labs" },
+  { label: "Home", path: "/" },
   { label: "WorkSpec", path: "/workspec" },
-  { label: "About", path: "/about" },
+  { label: "Systems", path: "/systems" },
+  { label: "Proof", path: "/proof" },
 ];
 
-export const builders = [
+export const homeProof = [
   {
-    id: "b1",
-    name: "A. Mercer",
-    role: "Architect",
-    description: "Defining the structural boundaries and the underlying logic of the systems we deploy. Specializes in scalable conceptual models.",
-    glyph: "△"
+    system: "Raw product idea",
+    intervention: "Riley pushes vague intent into explicit actors, constraints, and flows.",
+    result: "The team gets a usable system definition before code starts.",
   },
   {
-    id: "b2",
-    name: "E. Vance",
-    role: "Narratologist",
-    description: "Weaving the conceptual threads that bind the user to the experience. Focuses on editorial pacing and semantic weight.",
-    glyph: "○"
+    system: "LLM-heavy delivery workflow",
+    intervention: "WorkSpec constrains what the model is allowed to generate.",
+    result: "Output becomes reliable instead of merely fast.",
   },
   {
-    id: "b3",
-    name: "K. Thorne",
-    role: "Technologist",
-    description: "Translating abstract intent into physical state. The bridge between the idea and the executable reality.",
-    glyph: "◇"
-  }
+    system: "Fragmented planning",
+    intervention: "Fieldstate imposes traceability across decisions and dependencies.",
+    result: "Delivery stops drifting because the architecture is legible.",
+  },
 ];
 
-export const artifacts = [
-  {
-    id: "a1",
-    name: "Void Protocol",
-    description: "A headless commerce engine stripped of all visual noise, relying entirely on haptic feedback and acoustic cues.",
-    status: "live",
-    builderRef: "b1",
-    icon: "V"
-  },
-  {
-    id: "a2",
-    name: "Chronos Interface",
-    description: "An experimental chronometer that measures time not in seconds, but in completed user intent loops.",
-    status: "building",
-    builderRef: "b3",
-    icon: "C"
-  },
-  {
-    id: "a3",
-    name: "Silent Registry",
-    description: "A decentralized identity framework prioritizing absolute anonymity over convenience.",
-    status: "archived",
-    builderRef: "b2",
-    icon: "S"
-  },
-  {
-    id: "a4",
-    name: "Monolith System",
-    description: "The core design system powering FieldState's internal tools. Brutalist, unforgiving, efficient.",
-    status: "live",
-    builderRef: "b1",
-    icon: "M"
-  }
+export const workspecCapabilities = [
+  "System mapping from dialogue, not static forms.",
+  "Spec generation that keeps context beside implementation.",
+  "Traceable decisions that survive beyond the first sprint.",
+  "Constraints that direct AI instead of letting it hallucinate structure.",
 ];
 
-export const archiveCategories = [
-  { id: "theory", label: "Theory", description: "Conceptual explorations" },
-  { id: "practice", label: "Practice", description: "Applied methodologies" },
-  { id: "transmissions", label: "Transmissions", description: "Brief dispatches" }
-];
-
-export const archivePosts = [
-  { id: "p1", categoryId: "theory", date: "2024.10.12", title: "The Death of the Dashboard", excerpt: "Why compiling metrics without narrative context leads to organizational paralysis." },
-  { id: "p2", categoryId: "practice", date: "2024.09.28", title: "Typography as Interface", excerpt: "When words become the only necessary controls in a digital environment." },
-  { id: "p3", categoryId: "transmissions", date: "2024.09.15", title: "State 001: Initialization", excerpt: "The beginning of the FieldState doctrine. Establishing the baseline." },
-  { id: "p4", categoryId: "theory", date: "2024.08.30", title: "Ceremonial Interactions", excerpt: "Adding friction intentionally to signify importance." },
-  { id: "p5", categoryId: "practice", date: "2024.08.12", title: "Dark Mode as Default", excerpt: "Psychological implications of inverted contrast interfaces." },
-];
-
-export const labProjects = [
+export const systemLayers = [
   {
-    id: "l1",
-    name: "Project: OBSCURE",
-    description: "A messaging protocol that inherently degrades text over time to mimic memory loss.",
-    status: "active",
+    name: "Synthesis",
+    line: "Where WorkSpec defines structure, Synthesis connects meaning.",
+    description:
+      "Synthesis is the decision-intelligence layer. It finds patterns across systems, clarifies what belongs together, and keeps structured thinking connected instead of fragmented.",
   },
   {
-    id: "l2",
-    name: "Project: LUMIN",
-    description: "Generating dynamic ambient light from interface interactions.",
-    status: "paused",
+    name: "Hearth",
+    line: "Systems need somewhere to land. Hearth is that layer.",
+    description:
+      "Hearth is the human interaction layer. It is where architecture meets trust, workflow, and the lived experience of the people operating the system.",
   },
   {
-    id: "l3",
-    name: "Project: ECHO",
-    description: "Soundscapes generated by codebase complexity.",
-    status: "shipped",
-  }
+    name: "Financial Layer",
+    line: "Structured thinking does not stop at product boundaries.",
+    description:
+      "This layer extends system definition into money, relationships, and long-term operational logic. The point is not finance tooling. The point is coherent structure across the whole field.",
+  },
 ];
 
-export const filterStatements = [
-  "Not for clients who need it yesterday.",
-  "Not for clients who fear negative space.",
-  "Not for clients who prioritize features over feeling.",
-  "Not for clients seeking generic templates.",
-  "Not for clients uncomfortable with friction."
+export const proofCases = [
+  {
+    system: "Undefined product concept",
+    intervention:
+      "Riley forced the team to name actors, constraints, and failure points before a roadmap existed.",
+    result:
+      "Ambiguity dropped fast enough for the team to move from hype to executable system definition.",
+    emphasis: "ambiguity clarified",
+  },
+  {
+    system: "LLM-assisted feature delivery",
+    intervention:
+      "WorkSpec constrained the model with explicit decisions, guardrails, and system components.",
+    result:
+      "Generated output became usable because the architecture existed before the prompts scaled.",
+    emphasis: "constraints imposed",
+  },
+  {
+    system: "Cross-functional planning drift",
+    intervention:
+      "Fieldstate introduced traceable decisions and a shared structural model instead of scattered documents.",
+    result:
+      "Design, engineering, and stakeholders operated against the same system map.",
+    emphasis: "traceability created",
+  },
 ];

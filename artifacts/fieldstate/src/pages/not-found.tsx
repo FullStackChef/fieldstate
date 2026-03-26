@@ -1,22 +1,21 @@
 import { Link } from "wouter";
-import { Reveal } from "@/components/layout/Reveal";
-import { Button } from "@/components/ui/button";
 import { usePageMeta } from "@/hooks/use-page-meta";
 
 export default function NotFound() {
-  usePageMeta("404 — Void State | FieldState", "The coordinate you requested does not exist within the FieldState architecture.");
+  usePageMeta("Fieldstate | Not found", "The route you asked for is outside the current system boundary.");
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center text-center px-4 noise-bg">
-      <Reveal>
-        <h1 className="text-8xl font-serif text-primary mb-4">404</h1>
-        <h2 className="text-2xl font-serif text-foreground mb-8">Void State Reached</h2>
-        <p className="text-muted-foreground max-w-md mx-auto mb-12">
-          The requested coordinate does not exist within the FieldState architecture. You have drifted out of bounds.
-        </p>
-        <Link href="/">
-          <Button variant="outline">Return to Core</Button>
-        </Link>
-      </Reveal>
+    <div className="mx-auto max-w-7xl px-4 pt-28 sm:px-6 lg:px-8">
+      <div className="rounded-[2rem] border border-border bg-card p-8 text-center">
+      <p className="text-xs uppercase tracking-[0.32em] text-primary">Outside the boundary</p>
+      <h1 className="mt-4 text-4xl font-serif text-foreground">That route does not exist in the current system.</h1>
+      <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">
+        Go back to the interface. The useful work starts there.
+      </p>
+      <Link href="/" className="mt-6 inline-flex rounded-full border border-primary bg-primary px-5 py-3 text-sm font-medium text-primary-foreground">
+        Return home
+      </Link>
+      </div>
     </div>
   );
 }

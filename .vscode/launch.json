@@ -1,0 +1,62 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug API Server",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--filter",
+        "@workspace/api-server",
+        "dev"
+      ],
+      "env": {
+        "PORT": "3001",
+        "OPENAI_API_KEY": "${env:OPENAI_API_KEY}",
+        "OPENAI_MODEL": "${env:OPENAI_MODEL}"
+      },
+      "console": "integratedTerminal",
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
+    {
+      "name": "Launch Fieldstate (Edge)",
+      "type": "chrome",
+      "request": "launch",
+      "runtimeExecutable": "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+      "url": "http://127.0.0.1:4173",
+      "webRoot": "${workspaceFolder}/artifacts/fieldstate/src",
+      "preLaunchTask": "dev:fieldstate"
+    },
+    {
+      "name": "Launch Mockup Sandbox (Edge)",
+      "type": "chrome",
+      "request": "launch",
+      "runtimeExecutable": "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+      "url": "http://127.0.0.1:4174",
+      "webRoot": "${workspaceFolder}/artifacts/mockup-sandbox/src",
+      "preLaunchTask": "dev:mockup-sandbox"
+    },
+    {
+      "name": "Launch Fieldstate Full Stack (Edge)",
+      "type": "chrome",
+      "request": "launch",
+      "runtimeExecutable": "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+      "url": "http://127.0.0.1:4173",
+      "webRoot": "${workspaceFolder}/artifacts/fieldstate/src",
+      "preLaunchTask": "dev:all"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug API + Launch Fieldstate",
+      "configurations": [
+        "Debug API Server",
+        "Launch Fieldstate (Edge)"
+      ]
+    }
+  ]
+}

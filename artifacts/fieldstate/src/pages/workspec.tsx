@@ -1,54 +1,67 @@
-import { Reveal } from "@/components/layout/Reveal";
-import { Button } from "@/components/ui/button";
-import { useStore } from "@/store";
+import { workspecCapabilities } from "@/data/content";
 import { usePageMeta } from "@/hooks/use-page-meta";
 
 export default function WorkSpec() {
-  const setSummonState = useStore(state => state.setSummonState);
-  usePageMeta("WorkSpec | FieldState", "WorkSpec is the FieldState methodology for building narrative systems. A framework for teams who refuse to build generic software.");
+  usePageMeta(
+    "WorkSpec | Fieldstate",
+    "WorkSpec is the upstream clarity engine Riley builds underneath the conversation.",
+  );
 
   return (
-    <div className="pt-32 pb-24 max-w-4xl mx-auto px-6">
-      <Reveal>
-        <h1 className="text-5xl font-serif mb-8 text-foreground">WorkSpec Framework</h1>
-        <div className="h-px w-full bg-primary/30 mb-16" />
-      </Reveal>
-
-      <div className="space-y-12">
-        <Reveal delay={0.2}>
-          <h2 className="text-2xl font-serif text-primary mb-4">The Flagship System</h2>
-          <p className="text-muted-foreground leading-relaxed">
-            WorkSpec is not a product; it is a rigid framework for executing high-stakes creative labor. It standardizes the unstandardizable. It provides a common syntax for disparate disciplines to converge on a single objective.
+    <div className="mx-auto max-w-7xl space-y-10 px-4 pt-28 sm:px-6 lg:px-8">
+      <section className="grid gap-6 lg:grid-cols-[0.55fr_0.45fr] lg:items-end">
+        <div>
+          <p className="text-xs uppercase tracking-[0.32em] text-primary">WorkSpec</p>
+          <h1 className="mt-3 text-5xl font-serif leading-tight text-foreground">The upstream clarity engine.</h1>
+          <p className="mt-5 max-w-3xl text-lg leading-8 text-foreground/90">
+            WorkSpec is what Riley is building underneath the conversation. It turns dialogue into structure, ambiguity into decisions, and thinking into architecture.
           </p>
-        </Reveal>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-16">
-          <Reveal delay={0.3}>
-            <div className="border border-border p-6">
-              <h3 className="text-sm uppercase tracking-widest text-foreground mb-4">Syntax Definition</h3>
-              <p className="text-sm text-muted-foreground">Establishes the absolute terminology for the project phase, eliminating semantic ambiguity.</p>
-            </div>
-          </Reveal>
-          <Reveal delay={0.4}>
-            <div className="border border-border p-6">
-              <h3 className="text-sm uppercase tracking-widest text-foreground mb-4">State Boundaries</h3>
-              <p className="text-sm text-muted-foreground">Defines exactly what is in scope, mathematically derived from the initial intent.</p>
-            </div>
-          </Reveal>
         </div>
+        <div className="rounded-[1.75rem] border border-border bg-card p-6">
+          <p className="text-xs uppercase tracking-[0.24em] text-primary">Core line</p>
+          <p className="mt-3 text-2xl font-serif text-foreground">Without structure, AI accelerates chaos. With structure, it accelerates delivery.</p>
+        </div>
+      </section>
 
-        <Reveal delay={0.5}>
-          <div className="bg-secondary p-12 text-center border border-border mt-24">
-            <h2 className="text-3xl font-serif mb-6 text-foreground">Initiate Integration</h2>
-            <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-              WorkSpec is deployed exclusively for clients operating at the bleeding edge of their respective domains.
-            </p>
-            <Button size="lg" onClick={() => setSummonState('open')}>
-              Summon WorkSpec Lead
-            </Button>
+      <section className="grid gap-4 lg:grid-cols-2">
+        <article className="rounded-[1.75rem] border border-border bg-card p-6">
+          <p className="text-xs uppercase tracking-[0.28em] text-primary">Riley and WorkSpec</p>
+          <p className="mt-4 text-lg leading-8 text-foreground">
+            Riley is the interface. WorkSpec is the system. The conversation becomes the spec.
+          </p>
+          <p className="mt-4 text-sm leading-7 text-muted-foreground">
+            Instead of collecting a brief and hoping it survives, WorkSpec forms in public. Goals, actors, constraints, and ambiguities are visible while the system is being defined.
+          </p>
+        </article>
+        <article className="rounded-[1.75rem] border border-border bg-card p-6">
+          <p className="text-xs uppercase tracking-[0.28em] text-primary">Philosophy</p>
+          <ul className="mt-4 space-y-4 text-sm leading-7 text-foreground">
+            <li>Structure before sprint.</li>
+            <li>Specs should live.</li>
+            <li>Traceability creates trust.</li>
+            <li>LLMs need architecture more than they need enthusiasm.</li>
+          </ul>
+        </article>
+      </section>
+
+      <section className="rounded-[1.75rem] border border-border bg-card p-6">
+        <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.28em] text-primary">Capabilities</p>
+            <h2 className="mt-3 text-3xl font-serif text-foreground">WorkSpec constrains the build before the build runs away.</h2>
           </div>
-        </Reveal>
-      </div>
+          <p className="max-w-xl text-sm leading-7 text-muted-foreground">
+            Code generation is not the hard part anymore. The hard part is making sure the generated system still reflects what matters.
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          {workspecCapabilities.map((item) => (
+            <div key={item} className="rounded-3xl border border-border/70 bg-background p-4 text-sm leading-7 text-foreground">
+              {item}
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

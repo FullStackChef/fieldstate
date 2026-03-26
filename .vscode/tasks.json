@@ -1,0 +1,111 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "dev:api-server",
+      "type": "shell",
+      "command": "PORT=${FIELDSTATE_API_PORT:-3001} pnpm --filter @workspace/api-server dev",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "OPENAI_API_KEY": "${env:OPENAI_API_KEY}",
+          "OPENAI_MODEL": "${env:OPENAI_MODEL}"
+        }
+      },
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "owner": "custom",
+          "fileLocation": [
+            "absolute"
+          ],
+          "pattern": {
+            "regexp": "^(?!x)x$"
+          },
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": ".",
+            "endsPattern": "Server listening on port"
+          }
+        }
+      ],
+      "presentation": {
+        "group": "fieldstate-dev",
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "dev:fieldstate",
+      "type": "shell",
+      "command": "PORT=${FIELDSTATE_WEB_PORT:-4173} BASE_PATH=${FIELDSTATE_BASE_PATH:-/} API_PROXY_TARGET=${FIELDSTATE_API_PROXY_TARGET:-http://127.0.0.1:3001} pnpm --filter @workspace/fieldstate dev",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "VITE_API_BASE_URL": "${env:VITE_API_BASE_URL}"
+        }
+      },
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "owner": "custom",
+          "fileLocation": [
+            "absolute"
+          ],
+          "pattern": {
+            "regexp": "^(?!x)x$"
+          },
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": ".",
+            "endsPattern": "(Local|ready in)"
+          }
+        }
+      ],
+      "presentation": {
+        "group": "fieldstate-dev",
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "dev:mockup-sandbox",
+      "type": "shell",
+      "command": "pnpm --filter @workspace/mockup-sandbox dev -- --host 0.0.0.0 --port ${MOCKUP_SANDBOX_PORT:-4174}",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "owner": "custom",
+          "fileLocation": [
+            "absolute"
+          ],
+          "pattern": {
+            "regexp": "^(?!x)x$"
+          },
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": ".",
+            "endsPattern": "(Local|ready in)"
+          }
+        }
+      ],
+      "presentation": {
+        "group": "fieldstate-dev",
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "dev:all",
+      "dependsOn": [
+        "dev:api-server",
+        "dev:fieldstate"
+      ],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    }
+  ]
+}

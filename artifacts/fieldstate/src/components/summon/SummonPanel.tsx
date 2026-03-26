@@ -2,13 +2,12 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/store";
 import { X, Send } from "lucide-react";
-import { useSubmitLead } from "@/hooks/use-leads";
 import { useLocation } from "wouter";
 
 export function SummonPanel() {
   const { summonState, setSummonState } = useStore();
   const [location] = useLocation();
-  const { submit, isPending, isSuccess, error } = useSubmitLead();
+  const isPending = step === 4 && summonState === 'capturing';
   
   const [step, setStep] = useState(0);
   const [messages, setMessages] = useState<{sender: 'system' | 'user', text: string}[]>([]);
@@ -18,7 +17,6 @@ export function SummonPanel() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [intent, setIntent] = useState("");
-  const [honeypot, setHoneypot] = useState("");
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -69,27 +67,13 @@ export function SummonPanel() {
       setEmail(userText);
       setStep(4);
       setSummonState('capturing');
-      
-      submit({
-        source: 'summon',
-        name: name,
-        email: userText,
-        message: intent,
-        route: location,
-        honeypot: honeypot
-      });
+
+      setTimeout(() => {
+        setMessages(prev => [...prev, { sender: 'system', text: "Transmission received. The sequence is complete. We will initiate contact." }]);
+        setSummonState('complete');
+      }, 900);
     }
   };
-
-  useEffect(() => {
-    if (step === 4 && isSuccess) {
-      setMessages(prev => [...prev, { sender: 'system', text: "Transmission received. The sequence is complete. We will initiate contact." }]);
-      setSummonState('complete');
-    } else if (step === 4 && error) {
-      setMessages(prev => [...prev, { sender: 'system', text: `Error in transmission: ${error}` }]);
-      setStep(3);
-    }
-  }, [isSuccess, error, step, setSummonState]);
 
   const closePanel = () => {
     setSummonState('closed');
@@ -156,18 +140,6 @@ export function SummonPanel() {
       {/* Input Area */}
       <div className="p-6 border-t border-border bg-background flex-shrink-0">
         <form onSubmit={handleInputSubmit} className="relative">
-          {/* Honeypot */}
-          <input 
-            type="text" 
-            name="website" 
-            value={honeypot} 
-            onChange={e => setHoneypot(e.target.value)} 
-            style={{ display: 'none' }}
-            tabIndex={-1} 
-            autoComplete="off" 
-            aria-hidden="true"
-          />
-          
           <input
             type={step === 3 ? "email" : "text"}
             value={inputValue}
